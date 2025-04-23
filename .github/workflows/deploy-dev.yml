@@ -21,7 +21,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies & build
-        working-directory: kkobak_frontend
+        working-directory: ./kkobak/kkobak_frontend
         run: |
           npm ci
           npm run build
