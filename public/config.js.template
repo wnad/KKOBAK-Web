@@ -1,0 +1,5 @@
+// public/config.js.template
+
+window._env_ = {
+  REACT_APP_GOOGLE_AUTH_CLIENT_ID: "__GOOGLE_CLIENT_ID__"
+};
