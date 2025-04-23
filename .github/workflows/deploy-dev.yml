@@ -3,17 +3,19 @@ name: CI/CD (Build & Swarm Deploy)
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ develop ]
 
 jobs:
   build-and-push:
-    name: Build and Push Docker Image
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Extract version
+        id: meta
+        run: |
+          VERSION=$(jq -r .version kkobak/kkobak_frontend/package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -27,24 +29,23 @@ jobs:
           context: ./kkobak/kkobak_frontend
           file:    ./kkobak/kkobak_frontend/Dockerfile
           push:    true
-          tags:    |
+          tags: |
+            ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:${{ steps.meta.outputs.version }}
             ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:latest
-            ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:${{ github.sha }}
 
   deploy:
-    name: SSH & Swarm Deploy
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
-      - name: SSH to server and update service
+      - name: SSH to server & Swarm update
         uses: appleboy/ssh-action@v0.1.5
         with:
           host:     ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key:      ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:latest
+            VERSION=${{ steps.meta.outputs.version }}
+            docker pull ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION
             docker service update \
-              --image ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:latest \
+              --image ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION \
               kkobak_kkobak-frontend
