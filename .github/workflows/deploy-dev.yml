@@ -21,7 +21,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies & build
-        working-directory: kkobak_frontend
+        working-directory: ./kkobak/kkobak_frontend
         run: |
           npm ci
           npm run build
@@ -35,7 +35,7 @@ jobs:
       - name: Build & push image
         uses: docker/build-push-action@v3
         with:
-          context: kkobak_frontend
+          context: ./kkobak/kkobak_frontend
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:latest
@@ -54,11 +54,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            # Pull the new image
+            # pull latest image
             docker pull ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:latest
 
-            # Trigger Swarm rolling update
+            # Swarm rolling update
             docker service update \
               --image ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:latest \
               kkobak_kkobak-frontend
-
