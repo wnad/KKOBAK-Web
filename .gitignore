@@ -4,3 +4,6 @@ build/
 
 
 .env
+
+# public/.gitignore
+config.js

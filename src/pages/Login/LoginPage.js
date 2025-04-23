@@ -6,6 +6,12 @@ import { jwtDecode } from 'jwt-decode';
 import './LoginPage.css';
 
 function LoginPage() {
+
+  // 런타임에 마운트된 config.js 에서 읽기
+  const {
+    REACT_APP_GOOGLE_AUTH_CLIENT_ID: googleClientId
+  } = window._env_;
+
   // Google 로그인 처리
   const handleGoogleLogin = (credentialResponse) => {
     if (!credentialResponse.credential) return;
@@ -26,12 +32,10 @@ function LoginPage() {
   return (
       <div className="login-page">
         <h2>로그인</h2>
-        <p>나만의 운동을 기록하고 관리해보세요!</p>
+        <p>운동을 기록하고 성장해보세요!</p>
 
-
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}>
-
-          {/* Google 로그인 버튼 */}
+        {/* Google 로그인 버튼 */}
+        <GoogleOAuthProvider clientId={googleClientId}>
           <GoogleLogin 
             onSuccess={handleGoogleLogin} 
             onError={() => console.log('Google 로그인 실패')}
