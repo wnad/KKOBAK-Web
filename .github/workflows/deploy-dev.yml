@@ -44,8 +44,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key:      ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            VERSION=${{ steps.meta.outputs.version }}
+            VERSION=${{ needs.build-and-push.outputs.version }}
             docker pull ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION
             docker service update \
               --image ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION \
               kkobak_kkobak-frontend
+              
