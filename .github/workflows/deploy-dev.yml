@@ -37,16 +37,29 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: SSH to server & Swarm update
+      - name: SSH & Swarm update
         uses: appleboy/ssh-action@v0.1.5
         with:
           host:     ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key:      ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            # 1) 올바른 version 가져오기 (비어 있으면 latest로 변경)
             VERSION=${{ needs.build-and-push.outputs.version }}
-            docker pull ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION
+            if [ -z "$VERSION" ]; then
+              echo "⚠️ VERSION is empty, falling back to 'latest'"
+              VERSION=latest
+            fi
+            echo "🔖 Deploying version: $VERSION"
+
+            # 2) pull & update
+            IMAGE=${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION
+            docker pull $IMAGE
+
+            # 3) 서비스 이름 확인
+            SERVICE_NAME=kkobak_kkobak-frontend  # ← 실제 `docker service ls` 결과에 맞춰 변경
+
+            # 4) 무중단 롤링 업데이트
             docker service update \
-              --image ${{ secrets.DOCKERHUB_USER }}/kkobak-frontend:$VERSION \
-              kkobak_kkobak-frontend
-              
+              --image $IMAGE \
+              $SERVICE_NAME
