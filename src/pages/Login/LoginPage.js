@@ -9,7 +9,7 @@ function LoginPage() {
 
   // 런타임에 마운트된 config.js 에서 읽기
   const {
-    REACT_APP_GOOGLE_AUTH_CLIENT_ID: googleClientId
+    KKOBAK_REACT_APP_GOOGLE_AUTH_CLIENT_ID: googleClientId
   } = window._env_;
 
   // Google 로그인 처리
