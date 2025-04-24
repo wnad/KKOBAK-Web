@@ -1,50 +1,69 @@
 // src/pages/LoginPage.js
 import React from 'react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import './LoginPage.css';
 
-function LoginPage() {
-
-  // 런타임에 마운트된 config.js 에서 읽기
+function LoginPageContent() {
   const googleClientId = window._env_.KKOBAK_REACT_APP_GOOGLE_AUTH_CLIENT_ID;
 
-  // Google 로그인 처리
-  const handleGoogleLogin = (credentialResponse) => {
-    if (!credentialResponse.credential) return;
-    
-    // 1) ID 토큰(JWT)을 디코드해서 유저 정보 꺼내기
-    const user = jwtDecode(credentialResponse.credential);
-    console.log('Decoded user info:', user);
-    // user.email, user.name, user.picture 등이 포함되어 있음
-
-    // 2) (선택) 백엔드에 credentialResponse.credential 보내서 검증·세션 생성
-    // fetch('/api/auth/google', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ id_token: credentialResponse.credential })
-    // })
-  };
+  // 이제 provider 안에서 호출됩니다!
+  const googleLogin = useGoogleLogin({
+    onSuccess: credentialResponse => {
+      console.log('성공', credentialResponse);
+      if (!credentialResponse.credential) return;
+      const user = jwtDecode(credentialResponse.credential);
+      console.log('Decoded user info:', user);
+      // TODO: 백엔드로 ID 토큰 보내기...
+    },
+    onError: () => console.log('실패'),
+  });
 
   return (
-    <div className="login-container">
-      <div className="login-card">
+    <div className="login-overlay-bg">
+      <div className="overlay-container">
+        {/* 1) 로고 */}
         <h1 className="logo-title">꼬박</h1>
-        <h2 className="page-title">로그인</h2>
-        <p className="page-subtitle">운동을 기록하고 성장해보세요!</p>
-        
-        <GoogleOAuthProvider clientId={googleClientId}>
+
+        {/* 2) 로그인 카드 */}
+        <div className="login-card">
+          <h2 className="page-title">로그인</h2>
+          <p className="page-subtitle">운동 기록, 성장의 시작</p>
+
+          {/* 3) 소셜 버튼 래퍼 */}
           <div className="btn-wrapper">
-            <GoogleLogin
-              onSuccess={res => console.log('구글 로그인 성공', res)}
-              onError={() => console.log('구글 로그인 실패')}
-            />
+            <button
+              className="social-btn google-btn"
+              onClick={() => googleLogin()}
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/240px-Google_%22G%22_logo.svg.png"
+                alt="Google logo"
+                className="social-icon"
+              />
+              <span>Google 계정으로 로그인</span>
+            </button>
+            {/* 카카오/네이버 버튼도 동일하게 .social-btn 으로 추가 가능 */}
           </div>
-        </GoogleOAuthProvider>
+
+          {/* 4) 약관 링크 */}
+          <div className="link-wrapper">
+            <a href="/terms">이용약관</a>
+            <span> | </span>
+            <a href="/privacy">개인정보처리방침</a>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-export default LoginPage;
+export default function LoginPage() {
+  const googleClientId = window._env_.KKOBAK_REACT_APP_GOOGLE_AUTH_CLIENT_ID;
+
+  return (
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <LoginPageContent />
+    </GoogleOAuthProvider>
+  );
+}

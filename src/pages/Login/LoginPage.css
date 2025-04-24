@@ -1,73 +1,110 @@
 /* src/pages/LoginPage.css */
 
-/* 1. 베이지 배경 위에 위/아래/좌/우 패딩을 넉넉히 주어 흰 카드 주위로 테두리 느낌 연출 */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f7f1e5;
-  padding: 8vh 5vw;   /* 위아래 8vh, 좌우 5vw */
-  box-sizing: border-box;
-}
-
-/* 2. 카드 폭을 좁히고 패딩도 살짝 조정하여 흰 영역을 절제. 세로 공간이 넉넉하면 세로로 늘어납니다. */
-.login-card {
-  background: #ffffff;
-  padding: 32px 20px; /* 상하 32px, 좌우 20px */
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  text-align: center;
-  width: 100%;
-  max-width: 360px;
-  /* 세로로 긴 화면에서 카드도 세로로 확장 */
-  min-height: 60vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* 3. “꼬박” 로고 스타일을 키움 */
-.logo-title {
-  font-size: 3rem;        /* 조금 더 크게 */
-  font-weight: 700;
-  color: #333333;
-  margin: 0 0 40px;       /* 아래 여백 40px */
-}
-
-/* 4. 페이지 타이틀 사이 간격 조정 */
-.page-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0 0 24px;    /* 아래 24px */
-  color: #444444;
-}
-
-/* 5. 서브타이틀 */
-.page-subtitle {
-  font-size: 1rem;
-  margin: 0 0 32px;    /* 아래 32px */
-  color: #666666;
-}
-
-/* 6. 버튼 래퍼: 버튼은 카드 안에서 폭 100%, 최대 280px */
-.btn-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
-
-.btn-wrapper .css-1dgn8eh-Button {
-  width: 100%;
-  max-width: 280px;
-}
-
-/* 반응형: 화면이 더 크거나 세로가 긴 경우 카드 패딩과 min-height를 조정 */
-@media (min-height: 800px) {
-  .login-container {
-    padding: 6vh 5vw;
+/* 1. 배경 & 중앙 정렬 그대로 */
+.login-overlay-bg {
+    background-color: #f7f1e5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5vh 5vw;
+    box-sizing: border-box;
   }
+  
+  /* 2. 카드 + 로고 전체 래퍼 */
+  .overlay-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  /* 3. “꼬박” 로고 (간격 그대로) */
+  .logo-title {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  /* 4. 로그인 카드 – 너비를 화면 비율에 따라 유연하게 */
   .login-card {
-    min-height: 70vh;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  
+    /* 핵심: 화면이 작을 땐 90%,  
+       넓을 땐 최대 400px 너비를 갖도록 */
+    width: clamp(280px, 90%, 400px);
+  
+    /* 세로 공간도 여유 있게 */
+    padding: 32px 24px;
+    box-sizing: border-box;
+    text-align: center;
   }
-}
+  
+  /* 5. 타이틀 & 서브타이틀 */
+  .page-title {
+    margin: 0 0 16px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #444;
+  }
+  .page-subtitle {
+    margin: 0 0 32px;
+    font-size: 1.125rem;
+    color: #666;
+  }
+  
+  /* 6. 버튼 래퍼 */
+  .btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  /* 7. 소셜 버튼 공통 */
+  .social-btn {
+    display: inline-flex;                /* 내부 아이콘+텍스트 정렬 */
+    align-items: center;
+    justify-content: center;
+    height: 48px;                        /* 버튼 높이 고정 */
+    width: 100%;                         /* 부모 카드 너비에 꽉 채움 */
+    border-radius: 999px;                /* pill 모양 */
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0 16px;                     /* 좌우 여백 */
+    box-sizing: border-box;
+  }
+  
+  /* 8. Google 버튼 스타일 */
+  .google-btn {
+    background: #fff;
+    border: 1px solid #dadce0;
+    color: #3c4043;
+  }
+  
+  /* 9. 버튼 아이콘 */
+  .social-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  
+  /* 10. 약관 링크 */
+  .link-wrapper {
+    font-size: 0.875rem;
+    color: #888;
+  }
+  .link-wrapper a {
+    color: #888;
+    text-decoration: none;
+  }
+  .link-wrapper a:hover {
+    text-decoration: underline;
+  }
+  
