@@ -5,7 +5,9 @@ set -e
 #    파일명(환경 변수명)과 내용을 읽어 export 합니다.
 for secret in /run/secrets/*; do
   varname=$(basename "$secret")
-  export "$varname"="$(cat "$secret")"
+  # 시크릿 파일에서 읽어서 개행과 앞뒤 공백 제거
+  val=$(cat "$secret" | tr -d '\r\n' | xargs)
+  export "$varname"="$val"
 done
 
 # 2) envsubst 로 config.js.template 의 ${VAR} 플레이스홀더를
