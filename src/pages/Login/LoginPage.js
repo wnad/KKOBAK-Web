@@ -12,6 +12,8 @@ function LoginPage() {
     KKOBAK_REACT_APP_GOOGLE_AUTH_CLIENT_ID: googleClientId
   } = window._env_;
 
+  console.log('Google Client ID:', googleClientId);
+
   // Google 로그인 처리
   const handleGoogleLogin = (credentialResponse) => {
     if (!credentialResponse.credential) return;
@@ -34,11 +36,15 @@ function LoginPage() {
         <h2>로그인</h2>
         <p>운동을 기록하고 성장해보세요!</p>
 
+
+
         {/* Google 로그인 버튼 */}
         <GoogleOAuthProvider clientId={googleClientId}>
           <GoogleLogin 
             onSuccess={handleGoogleLogin} 
-            onError={() => console.log('Google 로그인 실패')}
+            onError={
+              () => console.log('Google 로그인 실패')
+            }
           />
         </GoogleOAuthProvider>
 
