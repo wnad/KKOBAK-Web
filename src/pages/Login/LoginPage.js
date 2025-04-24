@@ -8,11 +8,7 @@ import './LoginPage.css';
 function LoginPage() {
 
   // 런타임에 마운트된 config.js 에서 읽기
-  const {
-    KKOBAK_REACT_APP_GOOGLE_AUTH_CLIENT_ID: googleClientId
-  } = window._env_;
-
-  console.log('Google Client ID:', googleClientId);
+  const googleClientId = window._env_.KKOBAK_REACT_APP_GOOGLE_AUTH_CLIENT_ID;
 
   // Google 로그인 처리
   const handleGoogleLogin = (credentialResponse) => {
@@ -32,24 +28,22 @@ function LoginPage() {
   };
 
   return (
-      <div className="login-page">
-        <h2>로그인</h2>
-        <p>운동을 기록하고 성장해보세요!</p>
-
-
-
-        {/* Google 로그인 버튼 */}
+    <div className="login-container">
+      <div className="login-card">
+        <h1 className="logo-title">꼬박</h1>
+        <h2 className="page-title">로그인</h2>
+        <p className="page-subtitle">운동을 기록하고 성장해보세요!</p>
+        
         <GoogleOAuthProvider clientId={googleClientId}>
-          <GoogleLogin 
-            onSuccess={handleGoogleLogin} 
-            onError={
-              () => console.log('Google 로그인 실패')
-            }
-          />
+          <div className="btn-wrapper">
+            <GoogleLogin
+              onSuccess={res => console.log('구글 로그인 성공', res)}
+              onError={() => console.log('구글 로그인 실패')}
+            />
+          </div>
         </GoogleOAuthProvider>
-
-
       </div>
+    </div>
   );
 }
 
